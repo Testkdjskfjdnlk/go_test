@@ -31,7 +31,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
   name := user.Name
   pageStruct, _ := model.LoadPage(title, name)
 
-
   // Render the template
   renderTemplate(w, "index.html", pageStruct)
 }
@@ -39,10 +38,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
   // Register static directory
   http.Handle("/static/",
-  http.StripPrefix("/static/",
-  http.FileServer(http.Dir("static"))))
+    http.StripPrefix("/static/",
+      http.FileServer(http.Dir("static"))))
 
-  // Handle root uri
+  // Register handlers
   http.HandleFunc("/", handler)
 
   serverPort := 8080
