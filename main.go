@@ -13,18 +13,37 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *model.Page) {
 
   tmpl = "templates/" + tmpl
   t := template.Must(template.ParseFiles(tmpl))
-  t.Execute(w, p)
+
+  err := t.Execute(w, p); if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+  }
+}
+
+func validatePath(w http.ResponseWriter, r *http.Request) (bool) {
+  valid := true
+  m := "/" != r.URL.Path
+
+  if m {
+    valid = false
+    http.NotFound(w, r)
+  }
+
+  return valid
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
   log.Printf("Loading index.html...\n")
   title := "Hello from the web!"
 
+  valid := validatePath(w, r); if !valid {
+    return
+  }
+
   // Use os/user package to get username from os
-  user, err := user.Current()
-  if err != nil {
+  user, err := user.Current(); if err != nil {
     log.Fatal("Unable to get current user from os")
-    panic(err)
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
   }
 
   // Load page structure
