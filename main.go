@@ -63,5 +63,5 @@ func main() {
   serverPort := 8080
 
   log.Printf("Started server on port %d\n", serverPort)
-  log.Fatal(http.ListenAndServe("0.0.0.0:8080", logRequest(http.DefaultServeMux)))
+  log.Fatal(http.ListenAndServe(":8080", logRequest(http.DefaultServeMux)))
 }
